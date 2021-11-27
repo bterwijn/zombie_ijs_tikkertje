@@ -5,9 +5,9 @@ class Actions:
         self.actions={}
 
     def add_action(self,action):
-        player_actions=self.actions.get(action.name,[])
-        player_actions.append(action)
-        self.actions[action.name]=player_actions
+        if not action.name in self.actions:
+            self.actions[action.name]=[]
+        self.actions[action.name].append(action)
 
     def clear(self):
         self.actions.clear()

@@ -8,10 +8,14 @@ import Action
 import Actions
 import Game_State
 
+def main():
+    game_server=Game_Server(*sys.argv[1:])
+    game_server.run()
+
 class Game_Server:
     game_fps=55
     
-    def __init__(self,host="0.0.0.0",port="2222"):
+    def __init__(self,port="2222",host="0.0.0.0"):
          context = zmq.Context()
          self.socket = context.socket(zmq.REP)
          self.socket.bind("tcp://"+host+":"+port)
@@ -34,6 +38,5 @@ class Game_Server:
                 start_time = now                         # update start time 
                 
 if __name__ == "__main__":
-    game_server=Game_Server(*sys.argv[1:])
-    game_server.run()
+    main()
     

@@ -7,15 +7,22 @@ import pygame
 import Action
 import Game_State
 
+def main():
+    if len(sys.argv)>1:
+        game_client=Game_Client(*sys.argv[1:])
+        game_client.run()
+    else:
+        print("usage: ",sys.argv[0],"<name> [port] [host] ")
+
 class Game_Client:
     game_fps=55
     
-    def __init__(self,name,host="127.0.0.1",port="2222"):
+    def __init__(self,name,port="2222",host="127.0.0.1"):
         self.name=name
         context = zmq.Context()
         print("Connecting as '",name,"' to server",host,"on port",port)
         self.socket = context.socket(zmq.REQ)
-        self.socket.connect ("tcp://"+host+":"+port)
+        self.socket.connect("tcp://"+host+":"+port)
         print("Connected")
         
     def run(self):
@@ -46,9 +53,5 @@ class Game_Client:
         return Action.Action(self.name,accel)
             
 if __name__ == "__main__":
-    if len(sys.argv)>1:
-        game_client=Game_Client(*sys.argv[1:])
-        game_client.run()
-    else:
-        print("usage: ",sys.argv[0],"<name> [host] [port] ")
+    main()
     
