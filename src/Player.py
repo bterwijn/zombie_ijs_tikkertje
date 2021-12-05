@@ -10,6 +10,12 @@ class Player:
         self.angle=0
         self.radius=20
         self.color=pygame.Color(random.randint(100,255),random.randint(100,255),random.randint(100,255))
+
+    def get_position(self):
+        return self.pos
+
+    def get_angle(self):
+        return self.angle
         
     def update(self,action_list):
         thrust_sum=0
@@ -26,9 +32,9 @@ class Player:
             self.speed+=accel
         self.pos+=self.speed
         self.speed*=0.98
-
-    def draw(self,screen):
-        pygame.draw.circle(screen, self.color, self.pos, self.radius, self.line_width)
+  
+    def draw(self,screen,viewport):
+        pygame.draw.circle(screen, self.color, viewport.tranform_vec(self.pos), viewport.transform(self.radius), self.line_width)
         line=pygame.Vector2(0,0)
         line.from_polar((self.radius*2, self.angle))
-        pygame.draw.line(screen, self.color, self.pos, self.pos+line ,self.line_width )
+        pygame.draw.line(screen, self.color, viewport.tranform_vec(self.pos), viewport.tranform_vec(self.pos+line), self.line_width )

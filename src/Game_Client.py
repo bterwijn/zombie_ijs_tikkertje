@@ -35,7 +35,7 @@ class Game_Client:
         while self.running:
             self.socket.send_pyobj(self.get_action())  # send action
             if game_state is not None:
-                game_state.draw(screen)                # draw game state
+                game_state.draw(screen,self.name)      # draw game state
             clock.tick(self.game_fps)                  # sleep to limit frame rate
             game_state = self.socket.recv_pyobj()      # receive game state
         pygame.quit()

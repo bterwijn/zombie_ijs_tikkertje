@@ -3,6 +3,7 @@ import pygame
 
 import Player
 import Polygon
+import Viewport
 
 class Game_State:
 
@@ -24,10 +25,23 @@ class Game_State:
                 self.players[name]=Player.Player(pygame.Vector2(400,400))
             self.players[name].update(action_list)
             
-    def draw(self,screen):
+    def draw(self,screen,name):
+        viewport=self.get_viewport(screen,name)
         screen.fill((0,0,0))
         for polygon in self.polygons:
-            polygon.draw(screen)
+            polygon.draw(screen,viewport)
         for name,player in self.players.items():
-            player.draw(screen)
+            player.draw(screen,viewport)
         pygame.display.flip()
+
+    def get_viewport(self,screen,name):
+        player_pos=pygame.Vector2(0,0)
+        player_angle=0
+        if name in self.players:
+            player_pos=self.players[name].get_position()
+            player_angle=self.players[name].get_angle()
+        screen_size=pygame.Vector2(screen.get_size())
+        screen_angle=90
+        return Viewport.Viewport(player_pos,player_angle,screen_size/2,screen_angle,2)
+        
+        
