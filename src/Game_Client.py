@@ -3,6 +3,7 @@ import zmq
 import time
 
 import pygame
+from pygame.locals import *
 
 import Action
 import Game_State
@@ -15,7 +16,7 @@ def main():
         print("usage: ",sys.argv[0],"<name> [port] [host] ")
 
 class Game_Client:
-    game_fps=55
+    game_fps=100
     
     def __init__(self,name,port="2222",host="127.0.0.1"):
         self.name=name
@@ -27,7 +28,7 @@ class Game_Client:
         
     def run(self):
         pygame.init()
-        screen = pygame.display.set_mode((800, 600))
+        screen = pygame.display.set_mode((800, 600), RESIZABLE)
         game_state=None
         clock = pygame.time.Clock()
         self.running = True        
@@ -48,9 +49,11 @@ class Game_Client:
             if event.type == pygame.MOUSEBUTTONUP:
                 print(event)
         keys=pygame.key.get_pressed()
-        accel=pygame.Vector2( -1 if keys[pygame.K_LEFT] else 0 + +1 if keys[pygame.K_RIGHT] else 0, \
-                              +1 if keys[pygame.K_DOWN] else 0 + -1 if keys[pygame.K_UP]    else 0 )
-        return Action.Action(self.name,accel)
+        t=0.4
+        r=4
+        thrust= -t if keys[pygame.K_DOWN] else 0 + +t if keys[pygame.K_UP]    else 0
+        rotation= -r if keys[pygame.K_LEFT] else 0 + +r if keys[pygame.K_RIGHT] else 0
+        return Action.Action(self.name,thrust,rotation)
             
 if __name__ == "__main__":
     main()

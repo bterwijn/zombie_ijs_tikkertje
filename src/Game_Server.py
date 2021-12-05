@@ -13,7 +13,7 @@ def main():
     game_server.run()
 
 class Game_Server:
-    game_fps=55
+    game_fps=100
     
     def __init__(self,port="2222",host="0.0.0.0"):
          context = zmq.Context()
@@ -22,7 +22,7 @@ class Game_Server:
          print("waiting for clients on server",host,"on port",port)
          
     def run(self):
-        game_state = Game_State.Game_State( pygame.Vector2(800, 600) )
+        game_state = Game_State.Game_State( )
         start_time = time.time()
         actions = Actions.Actions()
         while True:

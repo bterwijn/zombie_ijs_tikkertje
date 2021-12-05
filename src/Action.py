@@ -1,8 +1,7 @@
 
 class Action:
 
-    def __init__(self,name,accel):
+    def __init__(self,name,thrust,rotation):
         self.name=name
-        self.accel=accel
-
-
+        self.thrust=thrust
+        self.rotation=rotation
