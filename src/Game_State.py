@@ -28,22 +28,21 @@ class Game_State:
                 self.players[name]=Player.Player(pygame.Vector2(400,400))
             self.players[name].update(action_list)
             
-    def draw(self,screen,frame_history):
-        viewport=self.get_viewport(screen,frame_history)
+    def draw(self,screen,name,frame_averager):
+        viewport=self.get_viewport(screen,name,frame_averager)
         screen.fill((0,0,0))
         for polygon in self.polygons:
             polygon.draw(screen,viewport)
         for name,player in self.players.items():
             player.draw(screen,viewport)
         pygame.display.flip()
-
-    def get_viewport(self,screen,frame_history):
-        if len(frame_history)>0:
-            player_frame=frame_history[0]
+        
+    def get_viewport(self,screen,name,frame_averager):
+        player=self.get_player(name)
+        if player is None:
+            world_frame=Frame.Frame.zero()
         else:
-            player_frame=Frame.Frame(pygame.Vector2(0,0),0)
-        size=pygame.Vector2(screen.get_size())
-        screen_frame=Frame.Frame(pygame.Vector2(size[0]/2,2*size[1]/3),90)
-        return Viewport.Viewport(player_frame,screen_frame,2)
-        
-        
+            world_frame=frame_averager.update(player.get_frame(),0.05)
+        screen_size=pygame.Vector2(screen.get_size())
+        screen_frame=Frame.Frame(pygame.Vector2(screen_size[0]/2,2*screen_size[1]/3),90)
+        return Viewport.Viewport(world_frame,screen_frame,2)

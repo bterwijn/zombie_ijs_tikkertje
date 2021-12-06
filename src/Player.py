@@ -28,11 +28,11 @@ class Player:
             accel=pygame.Vector2(0,0)
             accel.from_polar((thrust_sum, self.frame.angle))
             self.speed+=accel
-        self.frame.vector+=self.speed
+        self.frame.pos+=self.speed
         self.speed*=0.98
   
     def draw(self,screen,viewport):
-        pygame.draw.circle(screen, self.color, viewport.tranform_vec(self.frame.vector), viewport.transform(self.radius), self.line_width)
+        pygame.draw.circle(screen, self.color, viewport.tranform_vec(self.frame.pos), viewport.transform(self.radius), self.line_width)
         line=pygame.Vector2(0,0)
         line.from_polar((self.radius*2, self.frame.angle))
-        pygame.draw.line(screen, self.color, viewport.tranform_vec(self.frame.vector), viewport.tranform_vec(self.frame.vector+line), self.line_width )
+        pygame.draw.line(screen, self.color, viewport.tranform_vec(self.frame.pos), viewport.tranform_vec(self.frame.pos+line), self.line_width )

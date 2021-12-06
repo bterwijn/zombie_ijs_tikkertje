@@ -7,6 +7,7 @@ from pygame.locals import *
 
 import Action
 import Game_State
+import Frame_Averager
 
 def main():
     if len(sys.argv)>1:
@@ -20,7 +21,7 @@ class Game_Client:
     
     def __init__(self,name,port="2222",host="127.0.0.1"):
         self.name=name
-        self.frame_history=[]
+        self.frame_averager=Frame_Averager.Frame_Averager()
         context = zmq.Context()
         print("Connecting as '",name,"' to server",host,"on port",port)
         self.socket = context.socket(zmq.REQ)
@@ -36,19 +37,10 @@ class Game_Client:
         while self.running:
             self.socket.send_pyobj(self.get_action())  # send action
             if game_state is not None:
-                frame_history=self.update_frame_history(game_state,self.name)
-                game_state.draw(screen,frame_history)      # draw game state
-            clock.tick(self.game_fps)                      # sleep to limit frame rate
-            game_state = self.socket.recv_pyobj()          # receive game state
+                game_state.draw(screen,self.name,self.frame_averager)   # draw game state
+            clock.tick(self.game_fps)                                   # sleep to limit frame rate
+            game_state = self.socket.recv_pyobj()                       # receive game state
         pygame.quit()
-
-    def update_frame_history(self,game_state,name):
-        player=game_state.get_player(name)
-        if player is not None:
-            self.frame_history.append(player.get_frame())
-            if len(self.frame_history)>12:
-                self.frame_history.pop(0)
-        return self.frame_history
         
     def get_action(self):
         for event in pygame.event.get():
