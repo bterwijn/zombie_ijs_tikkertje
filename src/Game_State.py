@@ -28,8 +28,8 @@ class Game_State:
                 self.players[name]=Player.Player(pygame.Vector2(400,400))
             self.players[name].update(action_list)
             
-    def draw(self,screen,name):
-        viewport=self.get_viewport(screen,name)
+    def draw(self,screen,frame_history):
+        viewport=self.get_viewport(screen,frame_history)
         screen.fill((0,0,0))
         for polygon in self.polygons:
             polygon.draw(screen,viewport)
@@ -37,12 +37,13 @@ class Game_State:
             player.draw(screen,viewport)
         pygame.display.flip()
 
-    def get_viewport(self,screen,name):
-        if name in self.players:
-            player_frame=self.players[name].get_frame()
+    def get_viewport(self,screen,frame_history):
+        if len(frame_history)>0:
+            player_frame=frame_history[0]
         else:
-            player_frame=Frame.Frame(pygame.Vector2(0,0),0)            
-        screen_frame=Frame.Frame(pygame.Vector2(screen.get_size())/2,90)
+            player_frame=Frame.Frame(pygame.Vector2(0,0),0)
+        size=pygame.Vector2(screen.get_size())
+        screen_frame=Frame.Frame(pygame.Vector2(size[0]/2,2*size[1]/3),90)
         return Viewport.Viewport(player_frame,screen_frame,2)
         
         

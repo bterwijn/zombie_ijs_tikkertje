@@ -5,3 +5,5 @@ class Frame:
         self.vector=vector
         self.angle=angle
 
+    def __repr__(self):
+        return f"{self.vector}:{self.angle}"
