@@ -1,9 +1,9 @@
-
 import pygame
 
 import Player
 import Polygon
 import Viewport
+import Frame
 
 class Game_State:
 
@@ -11,13 +11,16 @@ class Game_State:
         self.players={}
         self.polygons=[]
         self.add_polygons()
-
+        
     def add_polygons(self):
         p=Polygon.Polygon([pygame.Vector2(10,10),pygame.Vector2(300,10),pygame.Vector2(100,300)])
         self.polygons.append(p)
         p=Polygon.Polygon([pygame.Vector2(400,300),pygame.Vector2(500,360),pygame.Vector2(450,500)])
         self.polygons.append(p)
 
+    def get_player(self,name):
+        return self.players.get(name,None)
+        
     def update(self,elapsed_time,actions):
         for name,action_list in actions.get_actions().items():
             if name not in self.players:
@@ -35,13 +38,11 @@ class Game_State:
         pygame.display.flip()
 
     def get_viewport(self,screen,name):
-        player_pos=pygame.Vector2(0,0)
-        player_angle=0
         if name in self.players:
-            player_pos=self.players[name].get_position()
-            player_angle=self.players[name].get_angle()
-        screen_size=pygame.Vector2(screen.get_size())
-        screen_angle=90
-        return Viewport.Viewport(player_pos,player_angle,screen_size/2,screen_angle,2)
+            player_frame=self.players[name].get_frame()
+        else:
+            player_frame=Frame.Frame(pygame.Vector2(0,0),0)            
+        screen_frame=Frame.Frame(pygame.Vector2(screen.get_size())/2,90)
+        return Viewport.Viewport(player_frame,screen_frame,2)
         
         
