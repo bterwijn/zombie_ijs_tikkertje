@@ -4,12 +4,14 @@ import Player
 import Polygon
 import Viewport
 import Frame
+import Circles
 
 class Game_State:
 
     def __init__(self):
         self.players={}
         self.polygons=[]
+        self.circles=Circles.Circles.random(20,pygame.Vector2(-1000,-1000),pygame.Vector2(1000,1000),100,400,10,40)
         self.add_polygons()
         
     def add_polygons(self):
@@ -31,6 +33,7 @@ class Game_State:
     def draw(self,screen,name,frame_averager):
         viewport=self.get_viewport(screen,name,frame_averager)
         screen.fill((0,0,0))
+        self.circles.draw(screen,viewport)
         for polygon in self.polygons:
             polygon.draw(screen,viewport)
         for name,player in self.players.items():
