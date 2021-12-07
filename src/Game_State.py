@@ -11,7 +11,7 @@ class Game_State:
     def __init__(self):
         self.players={}
         self.polygons=[]
-        self.circles=Circles.Circles.random(20,pygame.Vector2(-1000,-1000),pygame.Vector2(1000,1000),100,400,10,40)
+        self.circles=Circles.Circles.random(20,pygame.Vector2(-2000,-2000),pygame.Vector2(2000,2000),100,1000,10,40)
         self.add_polygons()
         
     def add_polygons(self):
