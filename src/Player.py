@@ -31,8 +31,16 @@ class Player:
         self.frame.pos+=self.speed
         self.speed*=0.98
   
-    def draw(self,screen,viewport):
+    def draw(self,screen,viewport,name,name_textures):
         pygame.draw.circle(screen, self.color, viewport.tranform_vec(self.frame.pos), viewport.transform(self.radius), self.line_width)
         line=pygame.Vector2(0,0)
         line.from_polar((self.radius*2, self.frame.angle))
         pygame.draw.line(screen, self.color, viewport.tranform_vec(self.frame.pos), viewport.tranform_vec(self.frame.pos+line), self.line_width )
+        if not name in name_textures:
+            font = pygame.font.Font(pygame.font.get_default_font(), 24)
+            name_textures[name]=font.render(name,True,self.color)
+        name_texture=name_textures[name]
+        name_size=pygame.Vector2(name_texture.get_size())
+        pos=viewport.tranform_vec(self.frame.pos)-name_size/2
+        pos.y+=self.radius
+        screen.blit(name_texture, pos)
