@@ -26,10 +26,13 @@ class Game_Server:
         start_time = time.time()
         actions = Actions.Actions()
         while True:
-            action = self.socket.recv_pyobj()            # receive action
-            actions.add_action(action)                   # store action
-            self.socket.send_pyobj(game_state)           # send game_state asap
-
+            try:
+                action = self.socket.recv_pyobj(flags=zmq.NOBLOCK) # receive action
+                actions.add_action(action)                         # store action
+                self.socket.send_pyobj(game_state)                 # send game_state asap
+            except zmq.ZMQError as e:
+                time.sleep(0.0001) # wait a bit
+            
             now = time.time()
             elapsed_time = now - start_time
             if elapsed_time > 1/self.game_fps:           # check for frame rate 
