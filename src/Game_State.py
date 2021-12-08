@@ -15,6 +15,12 @@ class Game_State:
         self.add_polygons()
         
     def add_polygons(self):
+        p=Polygon.Polygon([pygame.Vector2(-1300,  -800),
+                           pygame.Vector2(-1000,  2100),
+                           pygame.Vector2( 1500,  1900),
+                           pygame.Vector2( 1900,  -300),
+                           pygame.Vector2(  800, -1300)])
+        self.polygons.append(p)
         p=Polygon.Polygon([pygame.Vector2(80,80),pygame.Vector2(300,10),pygame.Vector2(100,300)])
         self.polygons.append(p)
         p=Polygon.Polygon([pygame.Vector2(400,300),pygame.Vector2(500,360),pygame.Vector2(450,500)])
@@ -37,12 +43,19 @@ class Game_State:
                     player.speed=other.speed
                     other.speed=temp
             for polygon in self.polygons:
-                collision,p1,p2=player.is_in_collision_with_polygon(polygon)
+                collision,p1,p2=player.is_in_collision_with_polygon_line(polygon)
                 if collision:
                     player.frame.pos-=player.speed
-                    player.speed=Polygon.Polygon.bounce(p1,p2,player.speed)
-                    #player.speed*=-1
-            
+                    player.speed=Polygon.Polygon.bounce_line(p1,p2,player.speed)
+                    break
+            if not collision:
+                for polygon in self.polygons:
+                    collision,p=player.is_in_collision_with_polygon_corner(polygon)
+                    if collision:
+                        player.frame.pos-=player.speed
+                        player.speed=Polygon.Polygon.bounce_corner(p,player.frame.pos,player.speed)
+                        break
+                    
     def draw(self,screen,name,frame_averager,name_textures):
         viewport=self.get_viewport(screen,name,frame_averager)
         screen.fill((0,0,0))
