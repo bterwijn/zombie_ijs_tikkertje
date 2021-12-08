@@ -30,7 +30,17 @@ class Player:
             self.speed+=accel
         self.frame.pos+=self.speed
         self.speed*=0.98
-  
+
+    def is_in_collision_with_player(self,other):
+        if self is other:
+            return False
+        square_distance=(self.frame.pos-other.frame.pos).length_squared()
+        return square_distance<self.radius*self.radius+other.radius*other.radius
+
+    def is_in_collision_with_polygon(self,polygon):
+        dist,p1,p2=polygon.min_distance(self.frame.pos)
+        return not dist is None and dist<self.radius
+    
     def draw(self,screen,viewport,name,name_textures):
         pygame.draw.circle(screen, self.color, viewport.tranform_vec(self.frame.pos), viewport.transform(self.radius), self.line_width)
         line=pygame.Vector2(0,0)

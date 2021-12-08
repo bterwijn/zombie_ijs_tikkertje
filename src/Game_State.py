@@ -15,7 +15,7 @@ class Game_State:
         self.add_polygons()
         
     def add_polygons(self):
-        p=Polygon.Polygon([pygame.Vector2(10,10),pygame.Vector2(300,10),pygame.Vector2(100,300)])
+        p=Polygon.Polygon([pygame.Vector2(80,80),pygame.Vector2(300,10),pygame.Vector2(100,300)])
         self.polygons.append(p)
         p=Polygon.Polygon([pygame.Vector2(400,300),pygame.Vector2(500,360),pygame.Vector2(450,500)])
         self.polygons.append(p)
@@ -27,8 +27,19 @@ class Game_State:
         for name,action_list in actions.get_actions().items():
             if name not in self.players:
                 print("new player:",name)
-                self.players[name]=Player.Player(pygame.Vector2(400,400))
-            self.players[name].update(action_list)
+                self.players[name]=Player.Player(pygame.Vector2(0,0))
+            player=self.players[name]
+            player.update(action_list)
+            for other in self.players.values():
+                if player.is_in_collision_with_player(other):
+                    player.frame.pos-=player.speed
+                    temp=player.speed
+                    player.speed=other.speed
+                    other.speed=temp
+            for polygon in self.polygons:
+                if player.is_in_collision_with_polygon(polygon):
+                    player.frame.pos-=player.speed
+                    player.speed*=-1
             
     def draw(self,screen,name,frame_averager,name_textures):
         viewport=self.get_viewport(screen,name,frame_averager)
