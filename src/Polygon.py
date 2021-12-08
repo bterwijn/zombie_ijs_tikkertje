@@ -8,7 +8,11 @@ def main():
     p=Polygon([pygame.Vector2(0,0),pygame.Vector2(100,0),pygame.Vector2(0,100)])
     pos=pygame.Vector2(400,10)
     print(p.min_distance(pos))
-    
+    p1=pygame.Vector2(0,0)
+    p2=pygame.Vector2(1,0)
+    speed=pygame.Vector2(1,1)
+    print(Polygon.bounce(p1,p2,speed))
+
 class Polygon:
     color=pygame.Color(255,255,255)
     
@@ -38,7 +42,7 @@ class Polygon:
                     mp1=p1
                     mp2=p2
         return (min_dist,mp1,mp2)
-            
+
     def distance(p1,p2,pos):
         p2=p2-p1
         length=p2.length()
@@ -48,6 +52,14 @@ class Polygon:
         if proj>0 and proj<length:
             return (proj*p2-pos).length()
         return None
+
+    def bounce(p1,p2,speed):
+        p2=p2-p1
+        length=p2.length()
+        p2/=length
+        proj=p2.dot(speed)*p2
+        diff=proj-speed
+        return speed+2*diff
 
 if __name__ == "__main__":
     main()

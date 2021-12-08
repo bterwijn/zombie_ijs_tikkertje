@@ -39,7 +39,8 @@ class Player:
 
     def is_in_collision_with_polygon(self,polygon):
         dist,p1,p2=polygon.min_distance(self.frame.pos)
-        return not dist is None and dist<self.radius
+        collision=not dist is None and dist<self.radius
+        return (collision,p1,p2)
     
     def draw(self,screen,viewport,name,name_textures):
         pygame.draw.circle(screen, self.color, viewport.tranform_vec(self.frame.pos), viewport.transform(self.radius), self.line_width)

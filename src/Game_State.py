@@ -37,9 +37,11 @@ class Game_State:
                     player.speed=other.speed
                     other.speed=temp
             for polygon in self.polygons:
-                if player.is_in_collision_with_polygon(polygon):
+                collision,p1,p2=player.is_in_collision_with_polygon(polygon)
+                if collision:
                     player.frame.pos-=player.speed
-                    player.speed*=-1
+                    player.speed=Polygon.Polygon.bounce(p1,p2,player.speed)
+                    #player.speed*=-1
             
     def draw(self,screen,name,frame_averager,name_textures):
         viewport=self.get_viewport(screen,name,frame_averager)
