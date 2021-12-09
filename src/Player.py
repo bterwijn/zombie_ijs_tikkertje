@@ -11,10 +11,14 @@ class Player:
         self.speed=pygame.Vector2(0,0)
         self.radius=20
         self.color=pygame.Color(random.randint(100,255),random.randint(100,255),random.randint(100,255))
-
+        self.zombie=False
+        
     def get_frame(self):
         return self.frame
 
+    def is_zombie(self):
+        return self.zombie
+    
     def do_actions(self,action_list):
         thrust_sum=0
         rotation_sum=0
@@ -40,16 +44,18 @@ class Player:
         return square_distance<self.radius*self.radius+other.radius*other.radius
 
     def is_in_collision_with_polygon_line(self,polygon):
-        dist,p1,p2=polygon.min_distance_line(self.frame.pos)
-        collision=not dist is None and dist<self.radius
+        dist,p1,p2=polygon.min_distance_line(self.frame.pos,self.radius)
+        collision=not dist is None and dist<self.radius**2
         return (collision,p1,p2)
 
     def is_in_collision_with_polygon_corner(self,polygon):
         dist,p=polygon.min_distance_corner(self.frame.pos)
-        collision=not dist is None and dist<self.radius
+        collision=not dist is None and dist<self.radius**2
         return (collision,p)
         
     def draw(self,screen,viewport,name,name_textures):
+        if self.zombie:
+            pygame.draw.circle(screen, pygame.Color(255,0,0), viewport.tranform_vec(self.frame.pos), viewport.transform(self.radius))
         pygame.draw.circle(screen, self.color, viewport.tranform_vec(self.frame.pos), viewport.transform(self.radius), self.line_width)
         line=pygame.Vector2(0,0)
         line.from_polar((self.radius*2, self.frame.angle))
