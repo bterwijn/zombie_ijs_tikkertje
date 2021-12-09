@@ -14,8 +14,8 @@ class Player:
 
     def get_frame(self):
         return self.frame
-        
-    def update(self,action_list):
+
+    def do_actions(self,action_list):
         thrust_sum=0
         rotation_sum=0
         if len(action_list)>0:
@@ -28,6 +28,8 @@ class Player:
             accel=pygame.Vector2(0,0)
             accel.from_polar((thrust_sum, self.frame.angle))
             self.speed+=accel
+    
+    def step(self):
         self.frame.pos+=self.speed
         self.speed*=0.98
 

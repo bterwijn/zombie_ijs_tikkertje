@@ -30,32 +30,38 @@ class Game_State:
         return self.players.get(name,None)
         
     def update(self,elapsed_time,actions):
+        for name,player in self.players.items():
+            if name in actions.get_actions():
+                player.do_actions(actions.get_actions()[name])
+                del actions.get_actions()[name]
+            player.step()
+            self.collision_handling(player)
         for name,action_list in actions.get_actions().items():
             if name not in self.players:
                 print("new player:",name)
-                self.players[name]=Player.Player(pygame.Vector2(0,0))
-            player=self.players[name]
-            player.update(action_list)
-            for other in self.players.values():
-                if player.is_in_collision_with_player(other):
-                    player.frame.pos-=player.speed
-                    temp=player.speed
-                    player.speed=other.speed
-                    other.speed=temp
+                self.players[name]=Player.Player(pygame.Vector2(0,50*len(self.players)))
+
+    def collision_handling(self,player):
+        for other in self.players.values():
+            if player.is_in_collision_with_player(other):
+                player.frame.pos-=player.speed
+                temp=player.speed
+                player.speed=other.speed
+                other.speed=temp
+        for polygon in self.polygons:
+            collision,p1,p2=player.is_in_collision_with_polygon_line(polygon)
+            if collision:
+                player.frame.pos-=player.speed
+                player.speed=Polygon.Polygon.bounce_line(p1,p2,player.speed)
+                break
+        if not collision:
             for polygon in self.polygons:
-                collision,p1,p2=player.is_in_collision_with_polygon_line(polygon)
+                collision,p=player.is_in_collision_with_polygon_corner(polygon)
                 if collision:
                     player.frame.pos-=player.speed
-                    player.speed=Polygon.Polygon.bounce_line(p1,p2,player.speed)
+                    player.speed=Polygon.Polygon.bounce_corner(p,player.frame.pos,player.speed)
                     break
-            if not collision:
-                for polygon in self.polygons:
-                    collision,p=player.is_in_collision_with_polygon_corner(polygon)
-                    if collision:
-                        player.frame.pos-=player.speed
-                        player.speed=Polygon.Polygon.bounce_corner(p,player.frame.pos,player.speed)
-                        break
-                    
+                
     def draw(self,screen,name,frame_averager,name_textures):
         viewport=self.get_viewport(screen,name,frame_averager)
         screen.fill((0,0,0))
