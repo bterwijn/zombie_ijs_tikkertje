@@ -99,7 +99,7 @@ class Game_State:
         scale=max_player_distance/(screen_y_center*0.65)
         if scale<1.5:
             scale=1.5
-        if scale>5:
-            scale=5
+        if scale>4:
+            scale=4
         return scale
         
