@@ -12,7 +12,7 @@ class Game_State:
     def __init__(self):
         self.players={}
         self.polygons=[]
-        self.circles=Circles.Circles.random(20,pygame.Vector2(-2000,-2000),pygame.Vector2(2000,2000),100,1000,5,40)
+        self.circles=Circles.Circles.random(20,pygame.Vector2(-2000,-2000),pygame.Vector2(2000,2000),100,1000,5,60)
         self.add_polygons()
         
     def add_polygons(self):
@@ -76,24 +76,24 @@ class Game_State:
         pygame.display.flip()
         
     def get_viewport(self,screen,player,frame_averager):
+        world_frame=frame_averager.update(player.get_frame(),0.05)
         screen_size=pygame.Vector2(screen.get_size())
         screen_y_center=3*screen_size[1]/4
-        world_frame=frame_averager.update(player.get_frame(),0.05)
-        scale=self.get_scale(player,screen_y_center)
         screen_frame=Frame.Frame(pygame.Vector2(screen_size[0]/2,screen_y_center),90)
+        scale=self.get_scale(world_frame,screen_y_center*0.96)
         return Viewport.Viewport(world_frame,screen_frame,scale)
 
-    def max_player_distance(self,player):
+    def max_player_distance(self,world_frame):
         max_distance=1
         for n,p in self.players.items():
-            distance=(p.frame.pos-player.frame.pos).length_squared()
+            distance=(p.frame.pos-world_frame.pos).length_squared()
             if distance>max_distance:
                 max_distance=distance
         return math.sqrt(max_distance)
 
-    def get_scale(self,player,screen_y_center):
-        max_player_distance=self.max_player_distance(player)
-        scale=max_player_distance/(screen_y_center*0.65)
+    def get_scale(self,world_frame,screen_y_center):
+        max_player_distance=self.max_player_distance(world_frame)
+        scale=max_player_distance/screen_y_center
         if scale<1.5:
             scale=1.5
         if scale>4:
