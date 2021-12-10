@@ -1,4 +1,5 @@
 import pygame
+import math
 
 import Player
 import Polygon
@@ -74,10 +75,31 @@ class Game_State:
         
     def get_viewport(self,screen,name,frame_averager):
         player=self.get_player(name)
+        scale=1
+        screen_size=pygame.Vector2(screen.get_size())
+        screen_y_center=3*screen_size[1]/4
         if player is None:
             world_frame=Frame.Frame.zero()
         else:
             world_frame=frame_averager.update(player.get_frame(),0.05)
-        screen_size=pygame.Vector2(screen.get_size())
-        screen_frame=Frame.Frame(pygame.Vector2(screen_size[0]/2,3*screen_size[1]/4),90)
-        return Viewport.Viewport(world_frame,screen_frame,2)
+            scale=self.get_scale(player,screen_y_center)
+        screen_frame=Frame.Frame(pygame.Vector2(screen_size[0]/2,screen_y_center),90)
+        return Viewport.Viewport(world_frame,screen_frame,scale)
+
+    def max_player_distance(self,player):
+        max_distance=1
+        for n,p in self.players.items():
+            distance=(p.frame.pos-player.frame.pos).length_squared()
+            if distance>max_distance:
+                max_distance=distance
+        return math.sqrt(max_distance)
+
+    def get_scale(self,player,screen_y_center):
+        max_player_distance=self.max_player_distance(player)
+        scale=max_player_distance/(screen_y_center*0.65)
+        if scale<1.5:
+            scale=1.5
+        if scale>5:
+            scale=5
+        return scale
+        
