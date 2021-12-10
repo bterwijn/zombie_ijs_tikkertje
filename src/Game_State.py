@@ -64,25 +64,22 @@ class Game_State:
                     break
                 
     def draw(self,screen,name,frame_averager,name_textures):
-        viewport=self.get_viewport(screen,name,frame_averager)
         screen.fill((0,0,0))
-        self.circles.draw(screen,viewport)
-        for polygon in self.polygons:
-            polygon.draw(screen,viewport)
-        for name,player in self.players.items():
-            player.draw(screen,viewport,name,name_textures)
+        player=self.get_player(name)
+        if not player is None:
+            viewport=self.get_viewport(screen,player,frame_averager)
+            self.circles.draw(screen,viewport)
+            for polygon in self.polygons:
+                polygon.draw(screen,viewport)
+            for name,player in self.players.items():
+                player.draw(screen,viewport,name,name_textures)
         pygame.display.flip()
         
-    def get_viewport(self,screen,name,frame_averager):
-        player=self.get_player(name)
-        scale=1
+    def get_viewport(self,screen,player,frame_averager):
         screen_size=pygame.Vector2(screen.get_size())
         screen_y_center=3*screen_size[1]/4
-        if player is None:
-            world_frame=Frame.Frame.zero()
-        else:
-            world_frame=frame_averager.update(player.get_frame(),0.05)
-            scale=self.get_scale(player,screen_y_center)
+        world_frame=frame_averager.update(player.get_frame(),0.05)
+        scale=self.get_scale(player,screen_y_center)
         screen_frame=Frame.Frame(pygame.Vector2(screen_size[0]/2,screen_y_center),90)
         return Viewport.Viewport(world_frame,screen_frame,scale)
 
