@@ -16,11 +16,11 @@ class Game_State:
         self.add_polygons()
         
     def add_polygons(self):
-        p=Polygon.Polygon([pygame.Vector2(-1300,  -800),
-                           pygame.Vector2(-1000,  2100),
-                           pygame.Vector2( 1500,  1900),
-                           pygame.Vector2( 1900,  -300),
-                           pygame.Vector2(  800, -1300)])
+        p=Polygon.Polygon([pygame.Vector2(-1500,  -900),
+                           pygame.Vector2(-1300,  2200),
+                           pygame.Vector2( 1700,  2100),
+                           pygame.Vector2( 2000,  -700),
+                           pygame.Vector2( 1100, -1500)])
         self.polygons.append(p)
         p=Polygon.Polygon([pygame.Vector2(80,80),pygame.Vector2(300,10),pygame.Vector2(100,300)])
         self.polygons.append(p)
@@ -62,18 +62,6 @@ class Game_State:
                     player.frame.pos-=player.speed
                     player.speed=Polygon.Polygon.bounce_corner(p,player.frame.pos,player.speed)
                     break
-                
-    def draw(self,screen,name,frame_averager,name_textures):
-        screen.fill((0,0,0))
-        player=self.get_player(name)
-        if not player is None:
-            viewport=self.get_viewport(screen,player,frame_averager)
-            self.circles.draw(screen,viewport)
-            for polygon in self.polygons:
-                polygon.draw(screen,viewport)
-            for name,player in self.players.items():
-                player.draw(screen,viewport,name,name_textures)
-        pygame.display.flip()
         
     def get_viewport(self,screen,player,frame_averager):
         world_frame=frame_averager.update(player.get_frame(),0.05)
@@ -100,3 +88,11 @@ class Game_State:
             scale=4
         return scale
         
+    def draw(self,screen,viewport,player,name_textures):
+        screen.fill((0,0,0))
+        self.circles.draw(screen,viewport)
+        for polygon in self.polygons:
+            polygon.draw(screen,viewport)
+        for name,player in self.players.items():
+            player.draw(screen,viewport,name,name_textures)
+        pygame.display.flip()

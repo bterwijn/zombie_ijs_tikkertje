@@ -21,8 +21,6 @@ class Game_Client:
     
     def __init__(self,name,port="2222",host="127.0.0.1"):
         self.name=name
-        self.frame_averager=Frame_Averager.Frame_Averager()
-        self.name_textures={}
         context = zmq.Context()
         print("Connecting as '",name,"' to server",host,"on port",port)
         self.socket = context.socket(zmq.REQ)
@@ -32,23 +30,31 @@ class Game_Client:
     def run(self):
         pygame.init()
         screen = pygame.display.set_mode((800, 600), RESIZABLE)
+        frame_averager=Frame_Averager.Frame_Averager()
+        name_textures={}
         game_state=None
+        viewport=None
         clock = pygame.time.Clock()
         self.running = True        
         while self.running:
-            self.socket.send_pyobj(self.get_action())  # send action
+            self.socket.send_pyobj(self.get_action(viewport))  # send action
             if game_state is not None:
-                game_state.draw(screen,self.name,self.frame_averager,self.name_textures)   # draw game state
-            clock.tick(self.game_fps)                                                      # sleep to limit frame rate
-            game_state = self.socket.recv_pyobj()                                          # receive game state
+                player=game_state.get_player(self.name)
+                if not player is None:
+                    viewport=game_state.get_viewport(screen,player,frame_averager)
+                    game_state.draw(screen,viewport,player,name_textures)   # draw game state
+            clock.tick(self.game_fps)                                       # sleep to limit frame rate
+            game_state = self.socket.recv_pyobj()                           # receive game state
         pygame.quit()
         
-    def get_action(self):
+    def get_action(self,viewport):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 self.running=False
             if event.type == pygame.MOUSEBUTTONDOWN:
-                print(event)
+                if not viewport is None:
+                    p=pygame.Vector2(event.pos)
+                    print(p)
             if event.type == pygame.MOUSEBUTTONUP:
                 print(event)
         keys=pygame.key.get_pressed()
