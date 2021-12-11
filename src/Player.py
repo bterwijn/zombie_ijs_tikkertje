@@ -12,12 +12,16 @@ class Player:
         self.radius=20
         self.color=pygame.Color(random.randint(100,255),random.randint(100,255),random.randint(100,255))
         self.zombie=False
+        self.score=0
         
     def get_frame(self):
         return self.frame
 
     def is_zombie(self):
         return self.zombie
+
+    def set_zombie(self,zombie_flag):
+        self.zombie=zombie_flag
     
     def do_actions(self,action_list):
         thrust_sum=0
@@ -37,12 +41,12 @@ class Player:
         self.frame.pos+=self.speed
         self.speed*=0.98
 
-    def is_in_collision_with_player(self,other):
+    def is_in_collision_with_player(self,other,additional_radius=0):
         if self is other:
             return False
         square_distance=(self.frame.pos-other.frame.pos).length_squared()
-        return square_distance<self.radius*self.radius+other.radius*other.radius
-
+        return square_distance<(self.radius+additional_radius+other.radius)**2
+    
     def is_in_collision_with_polygon_line(self,polygon):
         dist,p1,p2=polygon.min_distance_line(self.frame.pos,self.radius)
         collision=not dist is None and dist<self.radius**2
@@ -53,13 +57,15 @@ class Player:
         collision=not dist is None and dist<self.radius**2
         return (collision,p)
         
-    def draw(self,screen,viewport,name,name_textures):
+    def draw(self,screen,viewport,name,name_textures,zombie_radius):
+        center=viewport.tranform_vec(self.frame.pos)
         if self.zombie:
-            pygame.draw.circle(screen, pygame.Color(255,0,0), viewport.tranform_vec(self.frame.pos), viewport.transform(self.radius))
+            pygame.draw.circle(screen, pygame.Color(255,0,0), center, viewport.transform(self.radius))
+            pygame.draw.circle(screen, pygame.Color(255,0,0), center, viewport.transform(self.radius+zombie_radius),1)
         pygame.draw.circle(screen, self.color, viewport.tranform_vec(self.frame.pos), viewport.transform(self.radius), self.line_width)
         line=pygame.Vector2(0,0)
         line.from_polar((self.radius*2, self.frame.angle))
-        pygame.draw.line(screen, self.color, viewport.tranform_vec(self.frame.pos), viewport.tranform_vec(self.frame.pos+line), self.line_width )
+        pygame.draw.line(screen, self.color, center, viewport.tranform_vec(self.frame.pos+line), self.line_width )
         if not name in name_textures:
             font = pygame.font.Font(pygame.font.get_default_font(), 24)
             name_textures[name]=font.render(name,True,self.color)

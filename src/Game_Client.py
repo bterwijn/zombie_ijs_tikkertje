@@ -22,16 +22,16 @@ class Game_Client:
     def __init__(self,name,port="2222",host="127.0.0.1"):
         self.name=name
         context = zmq.Context()
-        print("Connecting as '",name,"' to server",host,"on port",port)
+        print(f"Connecting as '{name}' to server {host} on port {port}")
         self.socket = context.socket(zmq.REQ)
         self.socket.connect("tcp://"+host+":"+port)
-        print("Connected")
         
     def run(self):
         pygame.init()
         screen = pygame.display.set_mode((800, 600), RESIZABLE)
         frame_averager=Frame_Averager.Frame_Averager()
         name_textures={}
+        score_texture={}
         game_state=None
         viewport=None
         clock = pygame.time.Clock()
@@ -42,9 +42,9 @@ class Game_Client:
                 player=game_state.get_player(self.name)
                 if not player is None:
                     viewport=game_state.get_viewport(screen,player,frame_averager)
-                    game_state.draw(screen,viewport,player,name_textures)   # draw game state
-            clock.tick(self.game_fps)                                       # sleep to limit frame rate
-            game_state = self.socket.recv_pyobj()                           # receive game state
+                    game_state.draw(screen,viewport,player,name_textures,score_texture)  # draw game state
+            clock.tick(self.game_fps)                                                    # sleep to limit frame rate
+            game_state = self.socket.recv_pyobj()                                        # receive game state
         pygame.quit()
         
     def get_action(self,viewport):

@@ -11,6 +11,6 @@ pid3=$(echo "$!")
 echo "hit ENTER to terminate"
 read my_var
 echo "stopping clients and server"
-kill $pid2 $pid3
+kill -9 $pid2 $pid3
 sleep 0.1
-kill $pid1
+kill -9 $pid1

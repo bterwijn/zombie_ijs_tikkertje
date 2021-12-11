@@ -1,5 +1,7 @@
 import pygame
 import math
+import random
+import time
 
 import Player
 import Polygon
@@ -14,7 +16,10 @@ class Game_State:
         self.polygons=[]
         self.circles=Circles.Circles.random(20,pygame.Vector2(-2000,-2000),pygame.Vector2(2000,2000),100,1000,5,60)
         self.add_polygons()
-        
+        self.zombie_radius=0
+        self.zombie_radius_max=200
+        self.no_zombie_time=time.time()
+         
     def add_polygons(self):
         p=Polygon.Polygon([pygame.Vector2(-1500,  -900),
                            pygame.Vector2(-1300,  2200),
@@ -75,6 +80,10 @@ class Game_State:
                            pygame.Vector2(-977, 1097),
                            pygame.Vector2(-1022, 684)])
         self.polygons.append(p)
+        p=Polygon.Polygon([pygame.Vector2(-1225, 1715),
+                           pygame.Vector2(-1232, 1474),
+                           pygame.Vector2(-1061, 1531)])
+        self.polygons.append(p)
 
     def get_player(self,name):
         return self.players.get(name,None)
@@ -89,10 +98,18 @@ class Game_State:
         for name,action_list in actions.get_actions().items():
             if name not in self.players:
                 print("new player:",name)
-                self.players[name]=Player.Player(pygame.Vector2(0,50*len(self.players)))
+                self.players[name]=Player.Player(pygame.Vector2(0,100*len(self.players)))
+        self.set_zombie()
 
     def collision_handling(self,player):
         for other in self.players.values():
+            if player.is_in_collision_with_player(other,self.zombie_radius):
+                if player.is_zombie() and not other.is_zombie():
+                    other.set_zombie(True)
+                    other.score+=1+self.zombie_radius
+                if other.is_zombie() and not player.is_zombie():
+                    player.set_zombie(True)
+                    player.score+=1+self.zombie_radius 
             if player.is_in_collision_with_player(other):
                 player.frame.pos-=player.speed
                 temp=player.speed
@@ -137,11 +154,59 @@ class Game_State:
             scale=4
         return scale
         
-    def draw(self,screen,viewport,player,name_textures):
+    def draw(self,screen,viewport,player,name_textures,score_texture):
         screen.fill((0,0,0))
         self.circles.draw(screen,viewport)
         for polygon in self.polygons:
             polygon.draw(screen,viewport)
         for name,player in self.players.items():
-            player.draw(screen,viewport,name,name_textures)
+            player.draw(screen,viewport,name,name_textures,self.zombie_radius)
+        self.draw_score(screen,score_texture)
         pygame.display.flip()
+
+    def draw_score(self,screen,score_texture):
+        score=self.get_score()
+        if not score in score_texture:
+            score_texture.clear()
+            font = pygame.font.Font(pygame.font.get_default_font(), 24)
+            scores=score.split('\n')
+            textures=[]
+            for s in scores:
+                textures.append(font.render(s,True,pygame.Color(255,255,255)))
+            score_texture[score]=textures
+        textures=score_texture[score]
+        y=0
+        for s in textures:
+            screen.blit(s,(0,y))
+            #print(s.get_size(), type(s.get_size()))
+            y+=s.get_size()[1]
+        
+    def zombie_count(self):
+        count=0
+        for n,p in self.players.items():
+            if p.is_zombie():
+               count+=1
+        return count
+
+    def set_zombie(self):
+        if len(self.players)>0:
+            if self.zombie_count()==0 and time.time()-self.no_zombie_time>2:
+                name=random.sample(self.players.keys(),1)[0]
+                self.players[name].set_zombie(True)
+                self.zombie_radius=0
+            if self.zombie_count()==len(self.players):            
+                for p in self.players.values():
+                    p.set_zombie(False)
+                self.no_zombie_time=time.time()
+            self.zombie_radius+=0.005
+            if self.zombie_radius>self.zombie_radius_max:
+                self.zombie_radius=self.zombie_radius_max
+
+    def get_score(self):
+        score=""
+        names=list(self.players.keys())
+        names.sort()
+        for n in names:
+            p=self.players[n]
+            score+=f"{n}: {round(p.score)}\n"
+        return score
