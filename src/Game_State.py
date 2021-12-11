@@ -22,9 +22,58 @@ class Game_State:
                            pygame.Vector2( 2000,  -700),
                            pygame.Vector2( 1100, -1500)])
         self.polygons.append(p)
+        
         p=Polygon.Polygon([pygame.Vector2(80,80),pygame.Vector2(300,10),pygame.Vector2(100,300)])
         self.polygons.append(p)
         p=Polygon.Polygon([pygame.Vector2(400,300),pygame.Vector2(500,360),pygame.Vector2(450,500)])
+        self.polygons.append(p)
+        p=Polygon.Polygon([pygame.Vector2(645, -68),
+                           pygame.Vector2(939, -1079),
+                           pygame.Vector2(1414, -437)])
+        self.polygons.append(p)
+        p=Polygon.Polygon([pygame.Vector2(29, 822),
+                           pygame.Vector2(-233, 1812),
+                           pygame.Vector2(-930, 1847)])
+        self.polygons.append(p)
+        p=Polygon.Polygon([pygame.Vector2(1352, 1683),
+                           pygame.Vector2(710, 1801),
+                           pygame.Vector2(790, 672),
+                           pygame.Vector2(1559, 339)])
+        self.polygons.append(p)
+        p=Polygon.Polygon([pygame.Vector2(-335, 42),
+                           pygame.Vector2(228, -438),
+                           pygame.Vector2(89, -817),
+                           pygame.Vector2(-903, -573)])
+        self.polygons.append(p)
+        p=Polygon.Polygon([pygame.Vector2(338, -968),
+                           pygame.Vector2(517, -733),
+                           pygame.Vector2(626, -1095)])
+        self.polygons.append(p)
+        p=Polygon.Polygon([pygame.Vector2(-1081, -298),
+                           pygame.Vector2(-814, -72),
+                           pygame.Vector2(-1095, 224)])
+        self.polygons.append(p)
+        p=Polygon.Polygon([pygame.Vector2(187, 1864),
+                           pygame.Vector2(443, 1869),
+                           pygame.Vector2(388, 1247)])
+        self.polygons.append(p)
+        p=Polygon.Polygon([pygame.Vector2(1207, 71),
+                           pygame.Vector2(1143, -13),
+                           pygame.Vector2(1548, -290),
+                           pygame.Vector2(1661, -109)])
+        self.polygons.append(p)
+        p=Polygon.Polygon([pygame.Vector2(880, 171),
+                           pygame.Vector2(721, 275),
+                           pygame.Vector2(931, 258)])
+        self.polygons.append(p)
+        p=Polygon.Polygon([pygame.Vector2(-339, 318),
+                           pygame.Vector2(-223, 225),
+                           pygame.Vector2(-144, 416)])
+        self.polygons.append(p)
+        p=Polygon.Polygon([pygame.Vector2(-749, 370),
+                           pygame.Vector2(-434, 694),
+                           pygame.Vector2(-977, 1097),
+                           pygame.Vector2(-1022, 684)])
         self.polygons.append(p)
 
     def get_player(self,name):

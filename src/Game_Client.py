@@ -54,9 +54,11 @@ class Game_Client:
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if not viewport is None:
                     p=pygame.Vector2(event.pos)
-                    print(p)
+                    p=viewport.reverse_tranform_vec(p)
+                    print(f"pygame.Vector2({round(p.x)}, {round(p.y)}),")
             if event.type == pygame.MOUSEBUTTONUP:
-                print(event)
+                pass
+                #print(event)
         keys=pygame.key.get_pressed()
         t=0.25
         r=2.5

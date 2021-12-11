@@ -11,6 +11,9 @@ class Viewport:
         
     def transform(self,value):
         return value/self.zoom
+
+    def reverse_transform(self,value):
+        return value*self.zoom
         
     def tranform_vec(self,v):
         v=v-self.world_frame.pos
@@ -19,4 +22,13 @@ class Viewport:
         phi-=self.world_frame.angle+self.view_frame.angle
         v.from_polar((r,phi))
         v+=self.view_frame.pos
+        return v
+
+    def reverse_tranform_vec(self,v):
+        v=v-self.view_frame.pos
+        r,phi=v.as_polar()
+        phi+=self.world_frame.angle+self.view_frame.angle
+        v.from_polar((r,phi))
+        v*=self.zoom
+        v+=self.world_frame.pos
         return v
