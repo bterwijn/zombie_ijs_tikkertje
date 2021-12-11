@@ -58,10 +58,9 @@ class Game_Client:
                     print(f"pygame.Vector2({round(p.x)}, {round(p.y)}),")
             if event.type == pygame.MOUSEBUTTONUP:
                 pass
-                #print(event)
         keys=pygame.key.get_pressed()
-        t=0.25
-        r=2.5
+        t=0.20
+        r=2.2
         thrust= -t if keys[pygame.K_DOWN] else 0 + +t if keys[pygame.K_UP]    else 0
         rotation= -r if keys[pygame.K_LEFT] else 0 + +r if keys[pygame.K_RIGHT] else 0
         return Action.Action(self.name,thrust,rotation)

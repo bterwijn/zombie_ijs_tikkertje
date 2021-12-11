@@ -32,6 +32,8 @@ class Player:
                 rotation_sum+=a.rotation
             thrust_sum/=len(action_list)
             rotation_sum/=len(action_list)
+            if self.zombie:
+                thrust_sum*=1.1
             self.frame.angle+=rotation_sum
             accel=pygame.Vector2(0,0)
             accel.from_polar((thrust_sum, self.frame.angle))
