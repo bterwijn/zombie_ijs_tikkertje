@@ -1,5 +1,5 @@
 # Sumo
-Sumo Python game
+Zombie-ijs-tikkertje Python game
 
 # Install
 ```
