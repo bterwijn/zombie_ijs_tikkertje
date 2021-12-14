@@ -1,4 +1,4 @@
-# Sumo
+# Zombie-ijs-tikkertje
 Zombie-ijs-tikkertje Python game
 
 # Install
