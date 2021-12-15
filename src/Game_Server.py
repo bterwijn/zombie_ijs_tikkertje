@@ -13,7 +13,7 @@ def main():
     game_server.run()
 
 class Game_Server:
-    game_fps=100
+    game_fps=60
     
     def __init__(self,port="2222",host="0.0.0.0"):
          context = zmq.Context()

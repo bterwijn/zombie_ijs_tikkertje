@@ -17,7 +17,7 @@ def main():
         print("usage: ",sys.argv[0],"<name> [port] [host] ")
 
 class Game_Client:
-    game_fps=100
+    game_fps=60
     
     def __init__(self,name,port="2222",host="127.0.0.1"):
         self.name=name
@@ -59,8 +59,8 @@ class Game_Client:
             if event.type == pygame.MOUSEBUTTONUP:
                 pass
         keys=pygame.key.get_pressed()
-        t=0.20
-        r=2.2
+        t=0.4
+        r=4.3
         thrust= -t if keys[pygame.K_DOWN] else 0 + +t if keys[pygame.K_UP]    else 0
         rotation= -r if keys[pygame.K_LEFT] else 0 + +r if keys[pygame.K_RIGHT] else 0
         return Action.Action(self.name,thrust,rotation)
