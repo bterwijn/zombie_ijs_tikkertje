@@ -41,7 +41,7 @@ class Player:
     
     def step(self):
         self.frame.pos+=self.speed
-        self.speed*=0.982
+        self.speed*=0.975
 
     def is_in_collision_with_player(self,other,additional_radius=0):
         if self is other:
